@@ -1,4 +1,4 @@
-import { Image, Text, TouchableOpacity, View } from "react-native"
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native"
 
 import { Input } from "@/components/Input"
 import { Button } from "@/components/Button"
@@ -9,6 +9,7 @@ import { styles } from "./styles"
 import { FilterStatus } from "@/types/FilterStatus"
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.DONE, FilterStatus.PENDING]
+const ITEMS = Array.from({ length: 100 }).map((_, index)=> String(index))
 
 export function Home() {
   return (
@@ -32,11 +33,27 @@ export function Home() {
           </TouchableOpacity>
         </View>
 
-        <Item 
-        data={{status:FilterStatus.DONE, description:"Café"}}
-        onStatus={()=>console.log("Status")}
-        onRemove={()=>console.log("Remover")}
-        />
+        {/* {
+          ITEMS.map((value) => 
+              <Item
+                key={value}
+                data={{ status: FilterStatus.DONE, description: String(value) }}
+                onStatus={() => console.log("Status")}
+                onRemove={() => console.log("Remover")}
+              />)
+          } */}
+
+          <FlatList 
+            data={ITEMS}
+            keyExtractor={item=>item}
+            renderItem={({item})=>
+              <Item
+                data={{ status: FilterStatus.DONE, description: item }}
+                onStatus={() => console.log("Status")}
+                onRemove={() => console.log("Remover")}
+              />
+            }
+          />
       </View>
 
     </View>
