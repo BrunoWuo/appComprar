@@ -3,10 +3,10 @@ import { Image, Text, TouchableOpacity, View } from "react-native"
 import { Input } from "@/components/Input"
 import { Button } from "@/components/Button"
 import { Filter } from "@/components/Filter"
-
-import { FilterStatus } from "@/types/FilterStatus"
+import { Item } from "@/components/Item"
 
 import { styles } from "./styles"
+import { FilterStatus } from "@/types/FilterStatus"
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.DONE, FilterStatus.PENDING]
 
@@ -31,6 +31,12 @@ export function Home() {
             <Text style={styles.clearText}>Limpar</Text>
           </TouchableOpacity>
         </View>
+
+        <Item 
+        data={{status:FilterStatus.DONE, description:"Café"}}
+        onStatus={()=>console.log("Status")}
+        onRemove={()=>console.log("Remover")}
+        />
       </View>
 
     </View>
