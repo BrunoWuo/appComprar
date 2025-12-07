@@ -9,7 +9,23 @@ import { styles } from "./styles"
 import { FilterStatus } from "@/types/FilterStatus"
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.DONE, FilterStatus.PENDING]
-const ITEMS = Array.from({ length: 100 }).map((_, index)=> String(index))
+const ITEMS = [
+  {
+    id: "1",
+    status: FilterStatus.DONE,
+    description: "1 pacote de café"
+  },
+  {
+    id: "2",
+    status: FilterStatus.PENDING,
+    description: "3 pacotes de macarrão"
+  },
+  {
+    id: "3",
+    status: FilterStatus.PENDING,
+    description: "3 cebolas"
+  },
+]
 
 export function Home() {
   return (
@@ -43,17 +59,24 @@ export function Home() {
               />)
           } */}
 
-          <FlatList 
-            data={ITEMS}
-            keyExtractor={item=>item}
-            renderItem={({item})=>
-              <Item
-                data={{ status: FilterStatus.DONE, description: item }}
-                onStatus={() => console.log("Status")}
-                onRemove={() => console.log("Remover")}
-              />
-            }
-          />
+        <FlatList
+          data={ITEMS}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) =>
+            <Item
+              // data={{ status: item.status, description: item.description }}
+              data={item}
+              onStatus={() => console.log("Status")}
+              onRemove={() => console.log("Remover")}
+            />
+          }
+          showsHorizontalScrollIndicator={false}
+          ItemSeparatorComponent={() => <View style={styles.separador} />}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyList}>Nenhum item aqui.</Text>
+          )}
+        />
       </View>
 
     </View>
