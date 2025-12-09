@@ -1,84 +1,77 @@
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native"
-
-import { Input } from "@/components/Input"
-import { Button } from "@/components/Button"
-import { Filter } from "@/components/Filter"
-import { Item } from "@/components/Item"
+import { Alert, FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native"
 
 import { styles } from "./styles"
+import { Button } from "@/components/Button"
+import { Input } from "@/components/Input"
+import { Filter } from "@/components/Filter"
 import { FilterStatus } from "@/types/FilterStatus"
+import { Item } from "@/components/Item"
+import { useState } from "react"
 
-const FILTER_STATUS: FilterStatus[] = [FilterStatus.DONE, FilterStatus.PENDING]
-const ITEMS = [
-  {
-    id: "1",
-    status: FilterStatus.DONE,
-    description: "1 pacote de café"
-  },
-  {
-    id: "2",
-    status: FilterStatus.PENDING,
-    description: "3 pacotes de macarrão"
-  },
-  {
-    id: "3",
-    status: FilterStatus.PENDING,
-    description: "3 cebolas"
-  },
-]
+const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
 
 export function Home() {
+  const [items, setItems] = useState<any>([])
+  const [filter, setFilter] = useState(FilterStatus.PENDING)
+  const [description, setDescription] = useState("")
+
+  function handleAdd() {
+    if (!description.trim()) {
+      return Alert.alert("Adicionar", "Informe a descrição para adicionar.")
+    }
+
+    const newItem = {
+      id: Math.random().toString().substring(2),
+      description,
+      status: FilterStatus.PENDING,
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Image source={require('@/assets/logo.png')} style={styles.logo} />
 
-      <View style={styles.form}>
-        <Input placeholder="O que você precisa comprar?" />
-        <Button title="Entrar" onPress={() => console.log("salvar")} />
+      <View style={styles.form}
+      >
+        <Input 
+          placeholder="O que você precisa comprar?" 
+          onChangeText={setDescription}
+        />
+        <Button title="Adicionar" onPress={handleAdd} />
       </View>
 
       <View style={styles.content}>
         <View style={styles.header}>
-          {
-            FILTER_STATUS.map((status =>
-              <Filter key={status} status={status} isActive />
-            ))
-          }
+          {FILTER_STATUS.map((status) => (
+            <Filter
+               key={status}
+               status={status} 
+               isActive={filter === status}
+               onPress={() => setFilter(status)} 
+            />
+          ))}
+
           <TouchableOpacity style={styles.clearButton}>
             <Text style={styles.clearText}>Limpar</Text>
           </TouchableOpacity>
         </View>
 
-        {/* {
-          ITEMS.map((value) => 
-              <Item
-                key={value}
-                data={{ status: FilterStatus.DONE, description: String(value) }}
-                onStatus={() => console.log("Status")}
-                onRemove={() => console.log("Remover")}
-              />)
-          } */}
-
-        <FlatList
-          data={ITEMS}
+        <FlatList 
+          data={items}
           keyExtractor={item => item.id}
-          renderItem={({ item }) =>
+          renderItem={({ item }) => (
             <Item
-              // data={{ status: item.status, description: item.description }}
-              data={item}
-              onStatus={() => console.log("Status")}
-              onRemove={() => console.log("Remover")}
+              data={item} 
+              onStatus={() => console.log("mudar o status")}
+              onRemove={() => console.log("remover")}
             />
-          }
-          showsHorizontalScrollIndicator={false}
+          )}
+          showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={styles.separador} />}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={() => (
-            <Text style={styles.emptyList}>Nenhum item aqui.</Text>
-          )}
+          ListEmptyComponent={() => <Text style={styles.emptyList}>Nenhum item aqui.</Text>}
         />
       </View>
-
     </View>
   )
 }
